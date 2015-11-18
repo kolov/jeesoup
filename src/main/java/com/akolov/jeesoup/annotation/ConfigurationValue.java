@@ -1,6 +1,7 @@
 package com.akolov.jeesoup.annotation;
 
 import javax.enterprise.util.Nonbinding;
+import javax.inject.Inject;
 import javax.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

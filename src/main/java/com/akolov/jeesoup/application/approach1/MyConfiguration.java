@@ -1,4 +1,4 @@
-package com.akolov.jeesoup.application;
+package com.akolov.jeesoup.application.approach1;
 
 import com.akolov.jeesoup.annotation.ApplicationConfiguration;
 

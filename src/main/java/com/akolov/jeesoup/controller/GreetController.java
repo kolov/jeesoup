@@ -1,8 +1,8 @@
 package com.akolov.jeesoup.controller;
 
 import com.akolov.jeesoup.annotation.ConfigurationValue;
-import com.akolov.jeesoup.application.MyConfiguration;
-import com.akolov.jeesoup.application.MyConfigurationComplex;
+import com.akolov.jeesoup.application.approach1.MyConfiguration;
+import com.akolov.jeesoup.application.approach2.MyConfigurationComplex;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -17,12 +17,12 @@ import java.io.IOException;
 public class GreetController extends HttpServlet {
 
     @Inject
-    @ConfigurationValue(key = "greet.name", defaultValue = "defaultName")
+    @ConfigurationValue(key = "greet.name", defaultValue = "defaultGreetName")
     @MyConfiguration
     private String greetName;
 
     @Inject
-    @MyConfigurationComplex(key = "secret.name", defaultValue = "defaultName")
+    @MyConfigurationComplex(key = "secret.name", defaultValue = "defaultSecretName")
     private String secretName;
 
     @Override

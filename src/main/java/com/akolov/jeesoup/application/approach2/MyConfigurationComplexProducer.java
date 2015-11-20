@@ -1,7 +1,7 @@
 package com.akolov.jeesoup.application.approach2;
 
 
-import com.akolov.jeesoup.annotation.ConfigurationInjector;
+import com.akolov.jeesoup.annotation.ConfigurationValueProducer;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -10,10 +10,10 @@ import javax.inject.Inject;
 /**
  * Custom CDI Producer to provide values annotated with {@link  MyConfigurationComplex }
  */
-public class MyConfigurationComplexInjector {
+public class MyConfigurationComplexProducer {
 
     @Inject
-    private ConfigurationInjector configurationInjector;
+    private ConfigurationValueProducer configurationInjector;
 
     @Produces
     @MyConfigurationComplex

@@ -15,10 +15,11 @@ import java.util.Set;
  * it would be annoying to supply the same, often very long, application key on each line
  * where a parameter is injected.
  */
-public class ConfigurationInjector {
+public class ConfigurationValueProducer {
     static final String APP_KEY_MISSING = "No application key defined; use @ApplicationConfiguration directly or through your own annotation ";
     static final String APP_MISSING_METHOD = "Annotation misses method {0}";
     static final String APP_ERROR_METHOD = "Error executing method {0}";
+    private Set<Class<?>> checkedClasses = new HashSet<>();
 
     @Produces
     @ConfigurationValue
@@ -62,10 +63,7 @@ public class ConfigurationInjector {
         return value;
     }
 
-    private Set<Class<?>> checkedClasses = new HashSet<>();
-
     private Object annotatedWith(Annotation ann, Class<?> aClass) {
-        System.out.println("Checking " + ann);
         if (checkedClasses.contains(ann.annotationType())) {
             return null;
         }

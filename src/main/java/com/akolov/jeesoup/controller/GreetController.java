@@ -16,11 +16,23 @@ import java.io.IOException;
 @WebServlet("/greet")
 public class GreetController extends HttpServlet {
 
+    /**
+     * Two approaches to provide parameters to both application-wide settings (e.g. applicationKey
+     * for the Configuration Service) and key for the parameter itself.
+     *
+     * First approach - reuse @ConfigurationValue, define a simple own annotation. Two annotations per parameter.
+     * See package approach1 for details.
+     *
+     */
     @Inject
     @ConfigurationValue(key = "greet.name", defaultValue = "defaultGreetName")
     @MyConfiguration
     private String greetName;
 
+    /**
+     * Second approach - Define a custom annotation and produces.
+     * See package approach2 for details.
+     */
     @Inject
     @MyConfigurationComplex(key = "secret.name", defaultValue = "defaultSecretName")
     private String secretName;

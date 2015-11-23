@@ -1,7 +1,7 @@
 package com.akolov.jeesoup.controller;
 
 import com.akolov.jeesoup.annotation.ConfigurationValue;
-import com.akolov.jeesoup.application.approach1.MyConfiguration;
+import com.akolov.jeesoup.application.MyAppConfiguration;
 import com.akolov.jeesoup.application.approach2.MyConfigurationComplex;
 
 import javax.inject.Inject;
@@ -17,30 +17,22 @@ import java.io.IOException;
 public class GreetController extends HttpServlet {
 
     /**
-     * Two approaches to provide parameters to both application-wide settings (e.g. applicationKey
-     * for the Configuration Service) and key for the parameter itself.
-     *
-     * First approach - reuse @ConfigurationValue, define a simple own annotation. Two annotations per parameter.
-     * See package approach1 for details.
-     *
+     * To inject configuration parameters, you first need to define your own annotation
+     * to define the applicationKey for the Configuration service. See @MyAppConfiguration.
+     * You may want to define
+     * several custom annotations, for parameteres stored under different
+     * keys.
+     * Then, for each value, use the three annotations as in the exampe below:
      */
     @Inject
     @ConfigurationValue(key = "greet.name", defaultValue = "defaultGreetName")
-    @MyConfiguration
+    @MyAppConfiguration
     private String greetName;
 
-    /**
-     * Second approach - Define a custom annotation and produces.
-     * See package approach2 for details.
-     */
-    @Inject
-    @MyConfigurationComplex(key = "secret.name", defaultValue = "defaultSecretName")
-    private String secretName;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("greet.name", greetName);
-        req.setAttribute("secret.name", secretName);
         req.getRequestDispatcher("/greet.jsp").forward(req, resp);
     }
 }

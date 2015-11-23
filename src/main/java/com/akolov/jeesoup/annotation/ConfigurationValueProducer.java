@@ -4,37 +4,32 @@ package com.akolov.jeesoup.annotation;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This Injector will provide CDI values from a configuration service. The configuration service requires
- * an application key, parameter key and default value. While the latter two have to be provided for each parameter,
- * it would be annoying to supply the same, often very long, application key on each line
- * where a parameter is injected.
+ * This Producer will provide CDI values from a configuration service.
+ *
+ * The configuration service requires an application key, each parameter requires key and default value. While the
+ * latter two have to be provided for each parameter, we do not want to define the application key
+ * more than once, hence the need of a custom annotation for each application key ,
+ * see @MyAppConfiguration.
  */
 public class ConfigurationValueProducer {
     static final String APP_KEY_MISSING = "No application key defined; use @ApplicationConfiguration directly or through your own annotation ";
-    static final String APP_MISSING_METHOD = "Annotation misses method {0}";
-    static final String APP_ERROR_METHOD = "Error executing method {0}";
     private Set<Class<?>> checkedClasses = new HashSet<>();
 
     @Produces
     @ConfigurationValue
-    public String injectConfiguration(InjectionPoint ip) throws IllegalStateException {
-        return inject(ip, ConfigurationValue.class);
-    }
-
-    public String inject(InjectionPoint ip, Class<? extends Annotation> aClass) {
-        Annotation param = ip.getAnnotated().getAnnotation(aClass);
-        Set<Annotation> ans = ip.getAnnotated().getAnnotations();
+    public String injectConfiguration(final InjectionPoint ip) {
+        final ConfigurationValue param = ip.getAnnotated().getAnnotation(ConfigurationValue.class);
+        final Set<Annotation> ans = ip.getAnnotated().getAnnotations();
         String appKey = null;
-        for (Annotation ann : ans) {
-            ApplicationConfiguration result = (ApplicationConfiguration) annotatedWith(ann, ApplicationConfiguration.class);
-            if (result != null) {
-                appKey = result.applicationKey();
+        for (final Annotation ann : ans) {
+            final ApplicationConfiguration configAnnotation = annotatedWith(ann, ApplicationConfiguration.class);
+            if (configAnnotation != null) {
+                appKey = configAnnotation.applicationKey();
+                break;
             }
         }
 
@@ -42,44 +37,38 @@ public class ConfigurationValueProducer {
             throw new IllegalStateException(APP_KEY_MISSING);
         }
 
-        String key = invokeMethod(param, "key");
-        String defaultValue = invokeMethod(param, "defaultValue");
+        final String key = param.key();
+        final String defaultValue = param.defaultValue();
         // TODO: Call service here with app key,  property key
+        // TODO check if mandatory and null, throw exception
         return appKey + ":" + key + "[" + defaultValue + "]";
     }
 
-    private String invokeMethod(Annotation param, String methodName) {
-        String value;
-        try {
-            Method method = param.annotationType().getMethod(methodName, new Class[]{});
-            value = (String) method.invoke(param, new Object[]{});
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException(String.format(APP_MISSING_METHOD, methodName));
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException(String.format(APP_ERROR_METHOD, methodName));
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(String.format(APP_ERROR_METHOD, methodName));
-        }
-        return value;
-    }
 
-    private Object annotatedWith(Annotation ann, Class<?> aClass) {
+    /**
+     * Searches for annotation with a given class - either the annotation itself or anontaion used to annotated this
+     * one.
+     *
+     * @param ann    annotation to search
+     * @param aClass class to search
+     * @return annotation of the class, if found, or null.
+     */
+    private <T extends Annotation> T annotatedWith(final Annotation ann, final Class<T> aClass) {
         if (checkedClasses.contains(ann.annotationType())) {
             return null;
         }
         if (ann.annotationType().isAssignableFrom(aClass)) {
-            return ann;
+            return (T) ann;
         }
         checkedClasses.add(ann.annotationType());
 
-        Class annClass = ann.annotationType();
-        for (Annotation sub : annClass.getAnnotations()) {
-            Object result = annotatedWith(sub, aClass);
+        final Class annClass = ann.annotationType();
+        for (final Annotation sub : annClass.getAnnotations()) {
+            final T result = annotatedWith(sub, aClass);
             if (result != null) {
                 return result;
             }
         }
-
         return null;
     }
 

@@ -2,7 +2,6 @@ package com.akolov.jeesoup.controller;
 
 import com.akolov.jeesoup.annotation.ConfigurationValue;
 import com.akolov.jeesoup.application.MyAppConfiguration;
-import com.akolov.jeesoup.application.approach2.MyConfigurationComplex;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;

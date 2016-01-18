@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public class ConfigurationValueProducer {
     static final String APP_KEY_MISSING = "No application key defined; use @ApplicationConfiguration directly or through your own annotation ";
-    private Set<Class<?>> checkedClasses = new HashSet<>();
+    private Set<Class<?>> checkedClasses = new HashSet<Class<?>>();
 
     @Produces
     @ConfigurationValue

@@ -49,5 +49,29 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>mavencentralmirror</id>
+            <name>mavencentralmirror</name>
+            <layout>default</layout>
+            <url>http://nllipadcn39845:8081/nexus/content/repositories/MAVEN-CENTRALII/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>cicd-test-snapshot</id>
+            <url>https://q-nexus.nl.eu.abnamro.com:8443/nexus/content/repositories/UCD_RELEASE_PUBLISHER/</url>
+            <uniqueVersion>true</uniqueVersion>
+        </snapshotRepository>
+       <repository>
+            <id>cicd-test-release</id>
+            <url>https://q-nexus.nl.eu.abnamro.com:8443/nexus/content/repositories/UCD_RELEASE_PUBLISHER/</url>
+        </repository>
+    </distributionManagement>
+
 
 </project>

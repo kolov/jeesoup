@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -9,8 +9,7 @@
     <packaging>pom</packaging>
 
     <name>Java EE 6 webapp project</name>
-    <description>A simple JEE app</description>
-
+    <description>A sample JEE app</description>
 
     <modules>
         <module>web</module>
@@ -18,39 +17,10 @@
     </modules>
 
     <properties>
-        <!-- Explicitly declaring the source encoding eliminates the following
-           message: -->
-        <!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered
-           resources, i.e. build is platform dependent! -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Timestamp format for the maven.build.timestamp property -->
-        <!-- You can reference property in pom.xml or filtered resources (must
-           enable third-party plugin if using Maven < 2.1) -->
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Define the version of JBoss' Java EE 6 APIs we want to import.
-               Any dependencies from org.jboss.spec will have their version defined by this
-               BOM -->
-            <!-- JBoss distributes a complete set of Java EE 6 APIs including
-               a Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or
-               a collection) of artifacts. We use this here so that we always get the correct
-               versions of artifacts. Here we use the jboss-javaee-web-6.0 stack (you can
-               read this as the JBoss stack of the Java EE Web Profile 6 APIs), and we use
-               version 2.0.0.Beta1 which is the latest release of the stack. You can actually
-               use this stack with any version of JBoss AS that implements Java EE 6, not
-               just JBoss AS 7! -->
-            <dependency>
-                <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-web-6.0</artifactId>
-                <version>2.0.0.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <!-- Needed for running tests (you may also use TestNG) -->
@@ -74,119 +44,56 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-
-            <!-- The JBoss AS plugin deploys your war to a local JBoss AS container -->
-            <!-- To use, set the JBOSS_HOME environment variable and run: mvn
-               package jboss-as:deploy -->
             <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>7.0.2.Final</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
             </plugin>
 
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>mavencentralmirror</id>
+            <name>mavencentralmirror</name>
+            <layout>default</layout>
+            <url>http://nllipadcn39845:8081/nexus/content/repositories/MAVEN-CENTRALII/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <profiles>
-
-
         <profile>
-            <!-- We add the JBoss repository as we need the JBoss AS connectors
-               for Arquillian -->
-            <repositories>
-                <!-- The JBoss Community public repository is a composite repository
-                   of several major repositories -->
-                <!-- see http://community.jboss.org/wiki/MavenGettingStarted-Users -->
-                <repository>
-                    <id>jboss-public-repository</id>
-                    <name>JBoss Repository</name>
-                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
-                    <!-- These optional flags are designed to speed up your builds
-                       by reducing remote server calls -->
-                    <releases>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-            </repositories>
-
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>jboss-public-repository</id>
-                    <name>JBoss Repository</name>
-                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
-                    <releases>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </pluginRepository>
-            </pluginRepositories>
-
-            <!-- An optional Arquillian testing profile that executes tests
-               in your JBoss AS instance -->
-            <!-- This profile will start a new JBoss AS instance, and execute
-               the test, shutting it down when done -->
-            <!-- Run with: mvn clean test -Parq-jbossas-managed -->
-            <id>arq-jbossas-managed</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                    <version>7.0.2.Final</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
+            <id>public</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>kolov-public-snapshot</id>
+                    <url>http://nexus.akolov.com/content/repositories/public-snapshots/</url>
+                    <uniqueVersion>true</uniqueVersion>
+                </snapshotRepository>
+            </distributionManagement>
         </profile>
-
         <profile>
-            <!-- We add the JBoss repository as we need the JBoss AS connectors
-               for Arquillian -->
-            <repositories>
-                <!-- The JBoss Community public repository is a composite repository
-                   of several major repositories -->
-                <!-- see http://community.jboss.org/wiki/MavenGettingStarted-Users -->
+            <id>aab</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>cicd-test-snapshot</id>
+                    <url>https://q-nexus.nl.eu.abnamro.com:8443/nexus/content/repositories/UCD_RELEASE_PUBLISHER/</url>
+                    <uniqueVersion>true</uniqueVersion>
+                </snapshotRepository>
                 <repository>
-                    <id>jboss-public-repository</id>
-                    <name>JBoss Repository</name>
-                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
-                    <!-- These optional flags are designed to speed up your builds
-                       by reducing remote server calls -->
-                    <releases>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
+                    <id>cicd-test-release</id>
+                    <url>https://q-nexus.nl.eu.abnamro.com:8443/nexus/content/repositories/UCD_RELEASE_PUBLISHER/</url>
                 </repository>
-            </repositories>
-
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>jboss-public-repository</id>
-                    <name>JBoss Repository</name>
-                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
-                    <releases>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </pluginRepository>
-            </pluginRepositories>
-
-            <!-- An optional Arquillian testing profile that executes tests
-               in a remote JBoss AS instance -->
-            <!-- Run with: mvn clean test -Parq-jbossas-remote -->
-            <id>arq-jbossas-remote</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                    <version>7.0.2.Final</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
+            </distributionManagement>
         </profile>
-
     </profiles>
+
+
 </project>
